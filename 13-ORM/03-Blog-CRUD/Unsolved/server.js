@@ -1,7 +1,7 @@
 // Dependencies
 // =============================================================
-const express = require('express');
-const sequelize = require('./config/connection');
+const express = require("express");
+const sequelize = require("./config/connection");
 
 // Sets up the Express App
 // =============================================================
@@ -13,17 +13,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Static directory
-app.use(express.static('public'));
+app.use(express.static("public"));
 
 // Routes
 // =============================================================
-app.use(require('./routes/api-routes'));
-app.use(require('./routes/html-routes'));
+app.use(require("./routes/api-routes"));
+app.use(require("./routes/html-routes"));
 
 // Starts the server to begin listening
 // =============================================================
-sequelize.sync({ force: false }).then(() => {
-  app.listen(PORT, function() {
-    console.log('App listening on PORT ' + PORT);
+sequelize.sync({ force: true }).then(() => {
+  app.listen(PORT, function () {
+    console.log("App listening on PORT " + PORT);
   });
 });
