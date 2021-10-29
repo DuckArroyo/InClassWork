@@ -1,57 +1,63 @@
-const router = require('express').Router();
-const db = require('../../models');
+const router = require("express").Router();
+const db = require("../../models");
 
 // Routes
 // =============================================================
 
-// Update query to "include" associated Author
-router.get('/', (req, res) => {
+router.get("/", (req, res) => {
   const query = {};
   if (req.query.author_id) {
     query.AuthorId = req.query.author_id;
   }
 
   db.Post.findAll({
-    where: query
-  }).then(dbPost => {
+    where: query,
+    // Here we add an "include" property to our options in our findAll query
+    // We set the value to an array of the models we want to include in a left outer join
+    // In this case, just `db.Author`
+    include: [db.Author],
+  }).then((dbPost) => {
     res.json(dbPost);
   });
 });
 
-// Update query to "include" associated Author
-router.get('/:id', (req, res) => {
+router.get("/:id", (req, res) => {
   db.Post.findOne({
     where: {
-      id: req.params.id
-    }
-  }).then(dbPost => {
+      id: req.params.id,
+    },
+    // Here we add an "include" property to our options in our findOne query
+    // We set the value to an array of the models we want to include in a left outer join
+    // In this case, just `db.Author`
+    include: [db.Author],
+  }).then((dbPost) => {
     res.json(dbPost);
   });
 });
 
-router.post('/', (req, res) => {
+router.post("/", (req, res) => {
   console.log(req.body);
-  db.Post.create(req.body).then(dbPost => {
+  db.Post.create(req.body).then((dbPost) => {
     res.json(dbPost);
   });
 });
 
-router.delete('/:id', (req, res) => {
+router.delete("/:id", (req, res) => {
   db.Post.destroy({
     where: {
-      id: req.params.id
-    }
-  }).then(dbPost => {
+      id: req.params.id,
+    },
+  }).then((dbPost) => {
     res.json(dbPost);
   });
 });
 
-router.put('/', (req, res) => {
+router.put("/", (req, res) => {
   db.Post.update(req.body, {
     where: {
-      id: req.body.id
-    }
-  }).then(dbPost => {
+      id: req.body.id,
+    },
+  }).then((dbPost) => {
     res.json(dbPost);
   });
 });
