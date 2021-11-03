@@ -1,65 +1,62 @@
 // Dependencies
 // =============================================================
-const express = require('express');
-const exphbs = require('express-handlebars');
+const express = require("express");
+const exphbs = require("express-handlebars");
 
 // Sets up the Express App
 // =============================================================
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Set Handlebars as the default template engine
-//
-// YOUR CODE HERE
-//
+app.engine("handlebars", exphbs());
+app.set("view engine", "handlebars");
 
 // Data
 // =============================================================
 const books = [
   {
-    title: 'Love You Forever',
+    title: "Love You Forever",
     read: false,
-    author: 'Robert Munsch'
+    author: "Robert Munsch",
   },
   {
-    title: 'The Giving Tree',
+    title: "The Giving Tree",
     read: false,
-    author: 'Shel Silverstein'
+    author: "Shel Silverstein",
   },
   {
-    title: 'Where the Red Fern Grows',
+    title: "Where the Red Fern Grows",
     read: true,
-    author: 'Wilson Rawls'
+    author: "Wilson Rawls",
   },
   {
-    title: 'The Fault in Our Stars',
+    title: "The Fault in Our Stars",
     read: true,
-    author: 'John Green'
+    author: "John Green",
   },
   {
-    title: 'Out of My Mind',
+    title: "Out of My Mind",
     read: false,
-    author: 'Sally Engelfried'
+    author: "Sally Engelfried",
   },
   {
-    title: 'Wonder',
+    title: "Wonder",
     read: false,
-    author: 'Barbara Schultz'
-  }
+    author: "Barbara Schultz",
+  },
 ];
 
 // Routes
 // =============================================================
 
-app.get('/', (req, res) => {
-  // Send all of the books to 'index.handlebars' as an object
-  //
-  // YOUR CODE HERE
-  //
+app.get("/", (req, res) => {
+  res.render("index", {
+    library: books,
+  });
 });
 
 // Starts the server to begin listening
 // =============================================================
 app.listen(PORT, () => {
-  console.log('App listening on PORT ' + PORT);
+  console.log("App listening on PORT " + PORT);
 });
