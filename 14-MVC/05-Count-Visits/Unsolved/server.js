@@ -1,19 +1,28 @@
 // Dependencies
 // =============================================================
-const express = require('express');
-const exphbs = require('express-handlebars');
+const express = require("express");
+const exphbs = require("express-handlebars");
 // Require the 'express-session' module
-// YOUR CODE HERE
-//
+const session = require("express-session");
+
+const SequelizeStore = require("connect-session-sequelize")(session.Store);
 
 // Sets up the Express App
 // =============================================================
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+
+const sess(session({
+  secret: "keyboard cat",
+  cookie: {},
+  resave: false,
+saveUninitialized: false
+}));
+app.use(sess)
 // Sets Handlebars as the default template engine
-app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
-app.set('view engine', 'handlebars');
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
 
 // Set up the session with the 'secret', 'resave', 'saveUninitialized' options
 //
@@ -24,64 +33,67 @@ app.set('view engine', 'handlebars');
 // =============================================================
 const books = [
   {
-    title: 'Love You Forever',
+    title: "Love You Forever",
     read: false,
-    author: 'Robert Munsch'
+    author: "Robert Munsch",
   },
   {
-    title: 'The Giving Tree',
+    title: "The Giving Tree",
     read: false,
-    author: 'Shel Silverstein'
+    author: "Shel Silverstein",
   },
   {
-    title: 'Where the Red Fern Grows',
+    title: "Where the Red Fern Grows",
     read: true,
-    author: 'Wilson Rawls'
+    author: "Wilson Rawls",
   },
   {
-    title: 'The Fault in Our Stars',
+    title: "The Fault in Our Stars",
     read: true,
-    author: 'John Green'
+    author: "John Green",
   },
   {
-    title: 'Out of My Mind',
+    title: "Out of My Mind",
     read: false,
-    author: 'Sally Engelfried'
+    author: "Sally Engelfried",
   },
   {
-    title: 'Wonder',
+    title: "Wonder",
     read: true,
-    author: 'Barbara Schultz'
-  }
+    author: "Barbara Schultz",
+  },
 ];
 
 // Routes
 // =============================================================
 
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
+  console.log("request", req.session);
+
   if (req.session.countVisit) {
+    req.session.countVisit++;
+    req.session.firstTime = false;
     // If the 'countVisit' session variable exists, increment it by 1 and set the 'firstTime' session variable to 'false'
     //
     // YOUR CODE HERE
     //
   } else {
-    // If the 'countVisit' session variable doesn't exist, set it to 1 and set the 'firstTime' session variable to 'true'
-    //
-    // YOUR CODE HERE
-    //
+    req.session.countVisit = 1;
+    req.session.firstTime = true;
+
   }
 
   const data = {
-    // Include the 'books' array, 'countVisit' and 'firstTime' session variables to be sent over to `index.handlebars`
-    //
-    // YOUR CODE HERE
-    //
+    library: books,
+    countVisit: req.session.countVisit,
+    firstTime: req.session.firstTime
+
   };
-  res.render('index', data);
+  res.render("index", data);
 });
 
 // Starts the server to begin listening
 // =============================================================
 app.listen(PORT, () => {
-  console.log('App listening on PORT ' + PORT);
+  console.log("App listening on PORT " + PORT);
 });
