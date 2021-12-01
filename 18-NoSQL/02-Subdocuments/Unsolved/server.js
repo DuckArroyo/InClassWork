@@ -1,61 +1,95 @@
-const express = require('express');
-const mongoose = require('mongoose');
+const express = require("express");
+const mongoose = require("mongoose");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-const { Notebook } = require('./models');
+const { Notebook } = require("./models");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/notebookdb', {
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/notebookdb", {
   useFindAndModify: false,
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
 });
 
-mongoose.set('useCreateIndex', true);
-mongoose.set('debug', true);
+mongoose.set("useCreateIndex", true);
+mongoose.set("debug", true);
 
 // Create a new notebook
-app.post('/api/notebooks', ({ body }, res) => {
+app.post("/api/notebooks", ({ body }, res) => {
   Notebook.create(body)
-    .then(dbNotebookData => {
+    .then((dbNotebookData) => {
       res.json(dbNotebookData);
     })
-    .catch(err => {
+    .catch((err) => {
       res.json(err);
     });
 });
 
 // Retrieve all notebooks
-app.get('/api/notebooks', (req, res) => {
+app.get("/api/notebooks", (req, res) => {
   Notebook.find()
-    .then(dbNotebookData => {
+    .then((dbNotebookData) => {
       res.json(dbNotebookData);
     })
-    .catch(err => {
+    .catch((err) => {
       res.json(err);
     });
 });
 
 // Create a new note for a notebook
-app.post('/api/notebooks/:notebookId/notes', (req, res) => {
+app.post("/api/notebooks/:notebookId/notes", (req, res) => {
   // Using the 'notebookId' in the params, find the notebook from the collection
   // Add the 'req.body' to the 'notes' subdocument array in the notebook
   //
   // YOUR CODE HERE
-  //
+  Notebook.findOneAndUpdate(
+    {
+      _id: req.params.notebookId,
+    },
+    { $addToSet: { notes: req.body } },
+    { runValidators: true, new: true }
+  )
+    .then((data) => {
+      if (!data) {
+        return res
+          .status(404)
+          .json({ message: "Notebook not found with this id!" });
+      }
+      res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 // Delete a note from a notebook
-app.delete('/api/notebooks/:notebookId/notes/:noteId', (req, res) => {
+app.delete("/api/notebooks/:notebookId/notes/:noteId", (req, res) => {
   // Using the 'notebookId' and 'noteId' in the params, find the notebook that contains the note
   // Remove the note from the 'notes' subdocument array in the notebook
   //
   // YOUR CODE HERE
-  //
+  Notebook.findOneAndUpdate(
+    {
+      _id: req.params.notebookId,
+    },
+    { $pull: { notes: { noteId: req.params.noteId } } },
+    { new: true }
+  )
+    .then((data) => {
+      if (!data) {
+        return res
+          .status(404)
+          .json({ message: "Notebook not found with this id!" });
+      }
+      res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 app.listen(PORT, () => {
