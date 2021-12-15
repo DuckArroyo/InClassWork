@@ -1,35 +1,49 @@
-import React from 'react';
-import List from './components/List';
+import React, { useState } from "react";
+import List from "./components/List";
 
 const groceries = [
   {
     id: 1,
-    name: 'Milk'
+    name: "Milk",
   },
   {
     id: 2,
-    name: 'Eggs'
+    name: "Eggs",
   },
   {
     id: 3,
-    name: 'Cheese'
+    name: "Cheese",
   },
   {
     id: 4,
-    name: 'Cake Mix'
+    name: "Cake Mix",
   },
   {
     id: 5,
-    name: 'Carrots'
+    name: "Carrots",
   },
   {
     id: 6,
-    name: 'Juice'
-  }
+    name: "Juice",
+  },
 ];
 
 function App() {
-  return <List groceries={groceries} />;
+  const [counter, setCounter] = useState();
+
+  const onClick = () => {
+    let updateCounter = counter++;
+    setCounter(updateCounter);
+    console.log(counter);
+  };
+
+  return (
+    <>
+      <List groceries={groceries} />
+      <h1>Counter:{counter}</h1>
+      <button onClick={onClick}>Click</button>
+    </>
+  );
 }
 
 export default App;
