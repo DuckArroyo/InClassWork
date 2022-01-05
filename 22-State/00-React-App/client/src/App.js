@@ -6,11 +6,10 @@ import {
   ApolloProvider,
   createHttpLink,
 } from '@apollo/client';
-import { useBookReducer } from './utils/reducers';
+
 import Header from './components/Header';
 import BookList from './pages/BookList';
 import Detail from './pages/Detail';
-import { UPDATE_CURRENT_BOOK } from './utils/actions';
 
 const httpLink = createHttpLink({
   uri: '/graphql',
@@ -23,21 +22,21 @@ const client = new ApolloClient({
 
 function App() {
   const [currentBook, setCurrentBook] = useState('');
-  const [state, dispatch] = useBookReducer({});
+
   return (
     <ApolloProvider client={client}>
       <Router>
-        <div className='flex-column justify-flex-start min-100-vh'>
+        <div className="flex-column justify-flex-start min-100-vh">
           <Header currentBook={currentBook} />
-          <div className='container'>
+          <div className="container">
             <Switch>
-              <Route exact path='/' component={BookList} />
+              <Route exact path="/" component={BookList} />
               <Route
                 exact
-                path='/book/:bookId'
+                path="/book/:bookId"
                 component={() => (
                   <Detail
-                    setCurrentBook={dispatch({ type: UPDATE_CURRENT_BOOK })}
+                    setCurrentBook={setCurrentBook}
                     currentBook={currentBook}
                   />
                 )}
