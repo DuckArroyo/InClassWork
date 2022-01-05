@@ -6,7 +6,7 @@ import {
   ApolloProvider,
   createHttpLink,
 } from '@apollo/client';
-
+import { StoreProvider } from './utils/GlobalState';
 import Header from './components/Header';
 import BookList from './pages/BookList';
 import Detail from './pages/Detail';
@@ -24,29 +24,31 @@ function App() {
   const [currentBook, setCurrentBook] = useState('');
 
   return (
-    <ApolloProvider client={client}>
-      <Router>
-        <div className="flex-column justify-flex-start min-100-vh">
-          <Header currentBook={currentBook} />
-          <div className="container">
-            <Switch>
-              <Route exact path="/" component={BookList} />
-              <Route
-                exact
-                path="/book/:bookId"
-                component={() => (
-                  <Detail
-                    setCurrentBook={setCurrentBook}
-                    currentBook={currentBook}
-                  />
-                )}
-              />
-              <Route render={() => <h1>404! Wrong Page</h1>} />
-            </Switch>
+    <StoreProvider>
+      <ApolloProvider client={client}>
+        <Router>
+          <div className='flex-column justify-flex-start min-100-vh'>
+            <Header currentBook={currentBook} />
+            <div className='container'>
+              <Switch>
+                <Route exact path='/' component={BookList} />
+                <Route
+                  exact
+                  path='/book/:bookId'
+                  component={() => (
+                    <Detail
+                      setCurrentBook={setCurrentBook}
+                      currentBook={currentBook}
+                    />
+                  )}
+                />
+                <Route render={() => <h1>404! Wrong Page</h1>} />
+              </Switch>
+            </div>
           </div>
-        </div>
-      </Router>
-    </ApolloProvider>
+        </Router>
+      </ApolloProvider>
+    </StoreProvider>
   );
 }
 

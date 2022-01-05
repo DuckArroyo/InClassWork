@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import { useParams } from 'react-router-dom';
-
+import { useStoreContext } from '../utils/GlobalState';
 import Book from '../components/Book';
 
 import { QUERY_BOOKS } from '../utils/queries';
@@ -13,6 +13,11 @@ const Detail = ({ setCurrentBook, currentBook }) => {
 
   const books = bookData?.books || [];
 
+  const [state, dispatch] = useStoreContext();
+
+  console.log(state);
+
+  
   useEffect(() => {
     setCurrentBook(books.find(({ _id }) => _id === bookId));
     console.log(currentBook);
